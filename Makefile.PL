@@ -11,10 +11,12 @@ WriteMakefile(
   PREREQ_PM => {
         'PDL'          => 0,
         'Sereal'       => 0,
+        'File::Slurp'  => 0,
   },
   BUILD_REQUIRES => {
         'PDL'          => 0,
         'Sereal'       => 0,
+        'File::Slurp'  => 0,
         'Test::More'   => '0.88',  # we need: done_testing()
   },
   META_MERGE => {
