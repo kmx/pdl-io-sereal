@@ -8,7 +8,7 @@ our @ISA = qw(Exporter);
 our @EXPORT_OK   = qw(rsereal wsereal);
 our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
-our $VERSION = '0.001';
+our $VERSION = '0.002';
 
 use constant DEBUG => $ENV{PDL_IO_SEREAL_DEBUG} ? 1 : 0;
 
@@ -18,7 +18,6 @@ use PDL::IO::Misc   qw(bswap2 bswap4 bswap8);
 use Sereal::Encoder qw(encode_sereal);
 use Sereal::Decoder qw(decode_sereal);
 use Scalar::Util    qw(looks_like_number);
-use File::Slurp;
 
 use Carp;
 $Carp::Internal{ (__PACKAGE__) }++;
@@ -37,13 +36,13 @@ sub import {
 sub wsereal {
   my ($pdl, $filename) = @_;
   my $sereal = encode_sereal($pdl, {freeze_callbacks=>1, compress=>Sereal::Encoder::SRL_ZLIB});
-  write_file($filename, {binmode=>':raw'}, $sereal);
+  _write_file($filename, $sereal);
   return $pdl;
 }
 
 sub rsereal {
   my $filename = shift;
-  my $sereal = read_file($filename, {binmode=>':raw'});
+  my $sereal = _read_file($filename);
   my $pdl = decode_sereal($sereal);
   return $pdl;
 }
@@ -121,6 +120,25 @@ sub _THAW {
   else {
     croak "THAW: invalid version";
   }
+}
+
+sub _read_file {
+  my ($filename) = @_;
+  open my $fh, '<', $filename or croak "rsereal: cannot open '$filename': $!";
+  my $rv;
+  my $data = '';
+  while ($rv = sysread($fh, my $buffer, 102400, 0)) {
+    $data .= $buffer
+  }
+  croak "rsereal: cannot read file '$filename': $!" if !defined $rv;
+  return $data;
+}
+
+sub _write_file {
+  my ($filename, $data) = @_;
+  open my $fh, '>', $filename or croak "wsereal: cannot open '$filename': $!";
+  my $rv = syswrite($fh, $data);
+  croak "wsereal: cannot write '$filename': $!" if !defined $rv;
 }
 
 1;

@@ -1,4 +1,8 @@
 Changes for PDL-IO-Sereal distribution
 
+0.002   2015/09/10
+        - removed File::Slurp prereq
+        - improved tests
+
 0.001   2015/09/10
         - initial version

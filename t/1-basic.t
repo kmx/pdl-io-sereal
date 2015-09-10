@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More;
+use Test::More tests => 6;
 use PDL;
 use PDL::IO::Sereal ':all';
 
@@ -25,5 +25,3 @@ is($pdl2->hdr->{key3}->info, 'PDL: LongLong D [10,10]');
 is($pdl2->hdr->{key3}->hdr->{key0}, 'zero');
 
 unlink "tmp.sereal";
-
-done_testing;
