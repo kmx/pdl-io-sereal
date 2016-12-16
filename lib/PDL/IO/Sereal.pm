@@ -8,7 +8,7 @@ our @ISA = qw(Exporter);
 our @EXPORT_OK   = qw(rsereal wsereal);
 our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 
 use constant DEBUG => $ENV{PDL_IO_SEREAL_DEBUG} ? 1 : 0;
 
